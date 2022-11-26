@@ -1,13 +1,20 @@
 import Grid from '@mui/material/Grid';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from '../axios';
 
 import { CommentsBlock } from '../components/CommentsBlock';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 
 export const Home = () => {
+    useEffect(() => {
+        axios.get('/posts').then(({ data }) => {
+            console.log(data);
+        });
+    }, []);
+
     return (
         <>
             <Tabs

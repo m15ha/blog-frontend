@@ -5,6 +5,7 @@ import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import IconButton from '@mui/material/IconButton';
 import clsx from 'clsx';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { UserInfo } from '../UserInfo';
 import styles from './Post.module.scss';
@@ -34,11 +35,11 @@ export const Post = ({
         <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
             {isEditable && (
                 <div className={styles.editButtons}>
-                    <a href={`/posts/${_id}/edit`}>
+                    <Link to={`/posts/${_id}/edit`}>
                         <IconButton color='primary'>
                             <EditIcon />
                         </IconButton>
-                    </a>
+                    </Link>
                     <IconButton onClick={onClickRemove} color='secondary'>
                         <DeleteIcon />
                     </IconButton>
@@ -64,13 +65,13 @@ export const Post = ({
                         {isFullPost ? (
                             title
                         ) : (
-                            <a href={`/posts/${_id}`}>{title}</a>
+                            <Link to={`/posts/${_id}`}>{title}</Link>
                         )}
                     </h2>
                     <ul className={styles.tags}>
                         {tags.map(name => (
                             <li key={name}>
-                                <a href={`/tag/${name}`}>#{name}</a>
+                                <Link to={`/tag/${name}`}>#{name}</Link>
                             </li>
                         ))}
                     </ul>
