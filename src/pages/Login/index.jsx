@@ -54,7 +54,6 @@ export const Login = () => {
                     label='E-Mail'
                     error={!!errors.email}
                     helperText={errors.email?.message}
-                    fullWidth
                     {...register('email', {
                         required: 'E-Mail is required',
                         pattern: {
@@ -62,6 +61,7 @@ export const Login = () => {
                             message: 'Invalid e-mail address',
                         },
                     })}
+                    fullWidth
                 />
                 <TextField
                     className={styles.field}
@@ -69,16 +69,17 @@ export const Login = () => {
                     type='password'
                     error={!!errors.password}
                     helperText={errors.password?.message}
-                    fullWidth
                     {...register('password', {
                         required: 'Password is required',
                     })}
+                    fullWidth
                 />
                 <Button
                     type='submit'
                     size='large'
                     variant='contained'
                     fullWidth
+                    disabled={!isValid}
                 >
                     Login
                 </Button>
