@@ -10,7 +10,7 @@ export const Login = () => {
   return (
       <Paper classes={{ root: styles.root }}>
           <Typography classes={{ root: styles.title }} variant='h5'>
-              Sigh in
+              Sign in
           </Typography>
           <TextField
               className={styles.field}
