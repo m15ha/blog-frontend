@@ -5,7 +5,9 @@ import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import IconButton from '@mui/material/IconButton';
 import clsx from 'clsx';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { fetchRemovePost } from '../../redux/slices/posts';
 
 import { UserInfo } from '../UserInfo';
 import styles from './Post.module.scss';
@@ -25,11 +27,17 @@ export const Post = ({
     isLoading,
     isEditable,
 }) => {
+    const dispatch = useDispatch();
     if (isLoading) {
         return <PostSkeleton />;
     }
 
-    const onClickRemove = () => {};
+    const onClickRemove = () => {
+        if (window.confirm('Are you sure you want to delete post?')) {
+            dispatch(fetchRemovePost(id));
+            window.localStorage.removeItem('token');
+        }
+    };
 
     return (
         <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>

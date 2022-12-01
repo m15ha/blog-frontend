@@ -2,15 +2,22 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import 'easymde/dist/easymde.min.css';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import SimpleMDE from 'react-simplemde-editor';
 import axios from '../../axios';
 import { selectIsAuth } from '../../redux/slices/auth';
 import styles from './AddPost.module.scss';
 
 export const AddPost = () => {
+    const { id } = useParams();
     const navigate = useNavigate();
     const isAuth = useSelector(selectIsAuth);
     const [text, setText] = useState('');
@@ -20,13 +27,15 @@ export const AddPost = () => {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
 
+    const isEdit = Boolean(id);
+
     const handleChangeFile = async () => {
         try {
             const formData = new FormData();
             const file = inputFileRef?.current?.files?.[0];
             formData.append('image', file);
             const { data } = await axios.post('/upload', formData);
-            console.log('🚀 ~ data', data)
+            console.log('🚀 ~ data', data);
             setImageUrl(data.url);
         } catch (error) {
             console.warn(error);
@@ -44,20 +53,39 @@ export const AddPost = () => {
     const onSubmit = async () => {
         try {
             setIsLoading(true);
-            const { data } = await axios.post('/posts', {
+            const fields = {
                 title,
                 text,
                 tags,
                 imageUrl,
-            });
-            const id = data._id;
-            navigate(`/post/${id}`);
+            };
+            const { data } = isEdit
+                ? await axios.patch(`/posts/${id}`, fields)
+                : await axios.post('/posts', fields);
+            const _id = isEdit ? id : data._id;
+            navigate(`/post/${_id}`);
         } catch (error) {
             console.warn(error);
         } finally {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (id) {
+            axios(`posts/${id}`)
+                .then(res => {
+                    const { title, text, tags, imageUrl } = res.data;
+                    setText(text);
+                    setTitle(title);
+                    setTags(tags);
+                    setImageUrl(imageUrl);
+                })
+                .catch(err => {
+                    console.warn(err);
+                });
+        }
+    }, [id]);
 
     const options = useMemo(
         () => ({
@@ -136,7 +164,7 @@ export const AddPost = () => {
             />
             <div className={styles.buttons}>
                 <Button onClick={onSubmit} size='large' variant='contained'>
-                    Publish
+                    {isEdit ? 'Save' : 'Publish'}
                 </Button>
                 <a href='/'>
                     <Button size='large'>Cancel</Button>
